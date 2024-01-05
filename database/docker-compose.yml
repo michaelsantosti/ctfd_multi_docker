@@ -1,0 +1,46 @@
+version: '2'
+
+services:
+
+  mariadb:
+    image: mariadb
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=CHANGETHEPASSWORD
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", 'mariadb-admin', 'ping', '-h', 'localhost', '-u', 'root', '-pCHANGETHEPASWORD' ]
+      timeout: 20s
+      retries: 10
+    networks:
+      internal:
+    # This command is required to set important mariadb defaults
+    command: [--character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci, --wait_timeout=28800, --log-warnings=0]
+
+  adminer:
+      image: wodby/adminer
+      restart: always
+      ports:
+         - 9000:9000
+      healthcheck:
+        test: curl --fail http://localhost:9000 || exit 1
+        interval: 30s
+        timeout: 10s
+        retries: 5
+      environment:
+        ADMINER_DEFAULT_DB_HOST: 'mariadb'
+        ADMINER_DESIGN: 'dracula'
+      depends_on:
+        mariadb:
+          condition: service_healthy
+          restart: true
+      networks:
+        external:
+        internal:
+
+networks:
+    external:
+    internal:
+        internal: true

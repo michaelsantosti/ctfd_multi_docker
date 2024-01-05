@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+
+  glances:
+    image: docker.io/nicolargo/glances
+    restart: always
+    hostname: ctfd.grad-on
+    environment:
+      - TZ=America/Sao_Paulo
+      - GLANCES_OPT=-w
+    healthcheck:
+      test: curl --fail http://localhost:61208 || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    ports:
+      - 61208:61208
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+      - '/etc/os-release:/etc/os-release'
+    pid: host
+    networks:
+      default:
+
+networks:
+    default:

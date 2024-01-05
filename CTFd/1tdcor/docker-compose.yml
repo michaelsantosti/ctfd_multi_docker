@@ -1,0 +1,52 @@
+version: '2'
+
+services:
+  ctfd:
+    build: ./ctfd/CTFd
+    user: root
+    restart: always
+    ports:
+      - "82:8000"
+    environment:
+      - UPLOAD_FOLDER=/var/uploads
+      - DATABASE_URL=mysql+pymysql://1tdcor:1tdcor@mariadb/1tdcor
+      - REDIS_URL=redis://cache:6379
+      - WORKERS=1
+      - LOG_FOLDER=/var/log/CTFd
+      - ACCESS_LOG=-
+      - ERROR_LOG=-
+      - REVERSE_PROXY=true
+    volumes:
+      - ./ctfd/data/logs:/var/log/CTFd
+      - ./ctfd/data/uploads:/var/uploads
+      - ./ctfd/CTFd/.:/opt/CTFd:ro
+    healthcheck:
+      test: curl --fail http://localhost:8000/healthcheck || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    depends_on:
+      cache:
+        condition: service_started
+    networks:
+      external:
+      internal:
+      database_internal:
+
+  cache:
+    image: redis:4
+    restart: always
+    volumes:
+    - ./cache:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+    networks:
+     internal:
+
+networks:
+    external:
+    internal:
+      internal: true
+    database_internal:
+      external: true
+
