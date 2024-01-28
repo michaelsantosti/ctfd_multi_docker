@@ -21,4 +21,4 @@ sudo git clone https://github.com/chainflag/ctfd-neon-theme.git CTFd/CTFd/themes
 sudo git clone https://github.com/AaronVigal/nullify-ctfd-theme.git && sudo mv ./nullify-ctfd-theme/nullify/ CTFd/CTFd/themes/ && sudo rm -rf nullify-ctfd-theme/
 
 #Install curl on build (enable healthcheck)
-sed -i '12i\        curl \ \' CTFd/Dockerfile
+sed -i '34i\        curl \ \' CTFd/Dockerfile
