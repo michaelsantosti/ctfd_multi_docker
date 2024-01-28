@@ -19,3 +19,6 @@ sudo git clone https://github.com/0xdevsachin/CTFD-odin-theme.git CTFd/CTFd/them
 sudo git clone https://github.com/iver-ics/CTFd-xmas-theme.git CTFd/CTFd/themes/xmas
 sudo git clone https://github.com/chainflag/ctfd-neon-theme.git CTFd/CTFd/themes/neon
 sudo git clone https://github.com/AaronVigal/nullify-ctfd-theme.git && sudo mv ./nullify-ctfd-theme/nullify/ CTFd/CTFd/themes/ && sudo rm -rf nullify-ctfd-theme/
+
+#Install curl on build (enable healthcheck)
+sed -i '12i\        curl \ \' CTFd/Dockerfile
